@@ -2,6 +2,7 @@
 using System.IO;
 namespace YtdlpUpdater
 {
+    //Build test for workflow script as im trying to figure this out.
     class Program
     {
         static void Main(string[] args)
