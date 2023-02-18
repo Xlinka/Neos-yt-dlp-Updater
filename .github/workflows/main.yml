@@ -24,14 +24,11 @@ jobs:
         DEBUG: "true"
 
     - name: Check if build output directory exists
-      run: |
-        if [ ! -d "bin/Release/net6.0" ]; then
-          echo "Build output directory not found"
-          echo "Current directory: $(pwd)"
-          echo "Directory content:"
-          ls -la
-          exit 1
-        fi
+    run: |
+      if [ ! -d "/Neos yt-dlp Updater/bin/Release/net6.0" ]; then
+        echo "Build output directory not found"
+        exit 1
+      fi
 
     - name: Zip the built files
       run: zip -r Release.zip bin/Release/net6.0/*
