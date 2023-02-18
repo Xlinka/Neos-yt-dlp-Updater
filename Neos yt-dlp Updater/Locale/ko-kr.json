@@ -1,0 +1,16 @@
+{
+  "custom_path": "yt-dlp.exe가 위치한 경로를 입력:\n",
+  "neos_dir": "NeosVR 경로: ",
+  "steam_dir": "Steam 경로: ",
+  "updating_ytdlp": "{0}의 yt-dlp 업데이트 진행중...",
+  "update_successful": "{0}의 yt-dlp를 업데이트 하였습니다.",
+  "update_not_found": "{0}에 yt-dlp.exe가 존재하지 않습니다.",
+  "updating_yt_dlp_at": "yt-dlp 업데이트 진행중 : ",
+  "update_both": "NeosVR 및 Steam의 yt-dlp를 모두 업데이트 하시겠습니까? (Y/N): ",
+  "update_neos": "NeosVR의 경로에 있는 yt-dlp를 업데이트 하시겠습니까? (Y/N): ",
+  "update_steam": "Steam의 경로에 있는 yt-dlp를 업데이트 하시겠습니까? (Y/N): ",
+  "invalid_input": "잘못된 입력입니다.",
+  "exit_prompt": "아무 키나 누르시면 종료됩니다."
+}
+
+//Thanks to MirPasec for Translation
