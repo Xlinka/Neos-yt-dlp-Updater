@@ -1,29 +1,33 @@
-name: Build
+name: Build Release
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET Core
+    - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.100-preview.7.21379.14'
+        dotnet-version: '5.0.x'
 
-    - name: Build with .NET Core
-      run: dotnet build -c Release
+    - name: Restore dependencies
+      run: dotnet restore
 
-    - name: Publish Release
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build the console app
+      run: dotnet build --configuration Release
+
+    - name: Zip the built files
+      run: zip -r Release.zip bin/Release/net5.0/*
+
+    - name: Upload the release artifact
+      uses: actions/upload-artifact@v2
       with:
-        files: |
-          ./YtdlpUpdater/bin/Release/YtdlpUpdater.exe
-        tag_name: ${{ github.ref }}
-        name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+        name: Release
+        path: ./Release.zip
