@@ -1,0 +1,14 @@
+{
+  "custom_path": "Enter the path to your yt-dlp.exe file:\n",
+  "neos_dir": "NeosVR directory: ",
+  "steam_dir": "Steam directory: ",
+  "updating_ytdlp": "Updating yt-dlp in {0}...",
+  "update_successful": "yt-dlp successfully updated in {0}.",
+  "ytdlp_not_found": "yt-dlp.exe not found in {0}.",
+  "updating_yt_dlp_at": "Updating yt-dlp at",
+  "update_both": "Update yt-dlp in both directories? (Y/N): ",
+  "update_neos": "Update yt-dlp in NeosVR directory? (Y/N): ",
+  "update_steam": "Update yt-dlp in Steam directory? (Y/N): ",
+  "invalid_input": "Invalid input.",
+  "exit_prompt": "Press any key to exit..."
+}

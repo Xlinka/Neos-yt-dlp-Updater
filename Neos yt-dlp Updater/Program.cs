@@ -1,96 +1,127 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Text.Json;
+using System.Collections.Generic;
+using System.Resources;
+
 namespace YtdlpUpdater
 {
-    //Build test for workflow script as im trying to figure this out.
     class Program
     {
         static void Main(string[] args)
         {
-            string customPath = Prompt("Enter a custom path for yt-dlp.exe (leave blank to skip): ");
-            // Set the default directories for NeosVR and Steam installations
-            string neosDir = @"C:\Neos\app";
-            string steamDir = @"C:\Program Files\Steam\steamapps\common\NeosVR";
+            
+            //code for debugging 
+
+            //var localeFolder = Path.Combine(Directory.GetCurrentDirectory(), "Locale");
+            //Console.WriteLine($"Searching for locales in {localeFolder}");
+
+            //var currentLocale = CultureInfo.CurrentCulture.Name;
+            //var localeFilePath = Path.Combine(localeFolder, $"{currentLocale}.json");
+            //Console.WriteLine($"Looking for locale file: {localeFilePath}");
+
+            //if (!File.Exists(localeFilePath))
+            //{
+            //    Console.WriteLine($"Locale file for {currentLocale} not found.");
+            //    return;
+            //}
+
+            var localeFolder = Path.Combine(Directory.GetCurrentDirectory(), "Locale");
+            var currentLocale = CultureInfo.CurrentCulture.Name;
+            var localeFilePath = Path.Combine(localeFolder, $"{currentLocale}.json");
+            if (!File.Exists(localeFilePath))
+            {
+                Console.WriteLine($"Locale file for {currentLocale} not found.");
+                return;
+            }
+
+            var langFile = File.ReadAllText(localeFilePath);
+
+            var langData = JsonSerializer.Deserialize<Dictionary<string, string>>(langFile);
+
+            string customPath = Prompt(langData["custom_path"]);
+            string neosDir = langData["neos_dir"];
+            string steamDir = langData["steam_dir"];
             string[] targetDirs;
 
             if (!string.IsNullOrEmpty(customPath))
             {
-                // If a custom path was provided, update yt-dlp.exe at that path
-                Console.WriteLine($"Updating yt-dlp.exe at custom path: {customPath}");
-                UpdateYtdlp(customPath);
+                Console.WriteLine($"{langData["updating_yt_dlp_at"]} {customPath}");
+                UpdateYtdlp(customPath, langData);
             }
             else
             {
-                // If no custom path was provided, prompt the user to choose which directories to update
-                string updateBoth = Prompt("Update yt-dlp.exe in both NeosVR and Steam directories? [Y/N]: ");
+                string updateBoth = Prompt(langData["update_both"]);
                 if (updateBoth.Equals("Y", StringComparison.OrdinalIgnoreCase))
                 {
                     targetDirs = new string[] { Path.Combine(neosDir, "RuntimeData"), Path.Combine(steamDir, "RuntimeData") };
-                    UpdateYtdlpAll(targetDirs);
+                    UpdateYtdlpAll(targetDirs, langData);
                 }
                 else if (updateBoth.Equals("N", StringComparison.OrdinalIgnoreCase))
                 {
-                    string updateNeos = Prompt("Update yt-dlp.exe in NeosVR directory? [Y/N]: ");
+                    string updateNeos = Prompt(langData["update_neos"]);
                     if (updateNeos.Equals("Y", StringComparison.OrdinalIgnoreCase))
                     {
                         targetDirs = new string[] { Path.Combine(neosDir, "RuntimeData") };
-                        UpdateYtdlpAll(targetDirs);
+                        UpdateYtdlpAll(targetDirs, langData);
                     }
-                    string updateSteam = Prompt("Update yt-dlp.exe in Steam directory? [Y/N]: ");
+                    string updateSteam = Prompt(langData["update_steam"]);
                     if (updateSteam.Equals("Y", StringComparison.OrdinalIgnoreCase))
                     {
                         targetDirs = new string[] { Path.Combine(steamDir, "RuntimeData") };
-                        UpdateYtdlpAll(targetDirs);
+                        UpdateYtdlpAll(targetDirs, langData);
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input. Aborting update.");
+                    Console.WriteLine(langData["invalid_input"]);
                 }
             }
-            // Wait for user input before closing the console window
 
-            Console.WriteLine("Press any key to exit.");
+            Console.WriteLine(langData["exit_prompt"]);
             Console.ReadKey();
         }
 
-        static string Prompt(string message)
+        static string Prompt(string prompt)
         {
-            Console.Write(message);
+            Console.Write(prompt);
             return Console.ReadLine();
         }
 
-        static void UpdateYtdlpAll(string[] targetDirs)
+        static void UpdateYtdlpAll(string[] targetDirs, Dictionary<string, string> langData)
         {
-            // Update yt-dlp.exe in all directories specified in targetDirs
             foreach (string targetDir in targetDirs)
             {
                 if (File.Exists(Path.Combine(targetDir, "yt-dlp.exe")))
                 {
-                    Console.WriteLine($"Updating yt-dlp.exe in {targetDir}");
+                    Console.WriteLine(langData["updating_ytdlp"], targetDir);
                     Directory.SetCurrentDirectory(targetDir);
                     System.Diagnostics.Process.Start("yt-dlp.exe", "-U").WaitForExit();
-                    Console.WriteLine($"yt-dlp.exe in {targetDir} updated successfully.");
+                    Console.WriteLine(langData["update_successful"], targetDir);
                 }
                 else
                 {
-                    Console.WriteLine($"yt-dlp.exe not found in {targetDir}. Skipping update.");
+                    Console.WriteLine(langData["ytdlp_not_found"], targetDir);
                 }
             }
         }
 
-        static void UpdateYtdlp(string targetDir)
+        static void UpdateYtdlp(string customPath, Dictionary<string, string> langData)
         {
-            if (File.Exists(Path.Combine(targetDir, "yt-dlp.exe")))
+            if (File.Exists(Path.Combine(customPath, "yt-dlp.exe")))
             {
-                Console.WriteLine($"Updating yt-dlp.exe in {targetDir}");
-                Directory.SetCurrentDirectory(targetDir);
+                Console.WriteLine(langData["updating_ytdlp"], customPath);
+                Directory.SetCurrentDirectory(customPath);
                 System.Diagnostics.Process.Start("yt-dlp.exe", "-U").WaitForExit();
-                Console.WriteLine($"yt-dlp.exe in {targetDir} updated successfully.");
+                Console.WriteLine(langData["update_successful"], customPath);
             }
             else
             {
-                Console.WriteLine($"yt-dlp.exe not found in {targetDir}. Skipping update.");
+                Console.WriteLine(langData["ytdlp_not_found"], customPath);
             }
         }
     }
