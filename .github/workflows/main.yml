@@ -25,19 +25,19 @@ jobs:
 
     - name: Check if build output directory exists
       run: |
-        if [ ! -d "bin/Release/net6.0" ]; then
+        if [ ! -d "./Neos yt-dlp Updater/bin/Release/net6.0" ]; then
           echo "Build output directory not found"
           exit 1
         fi
 
-    - name: Set version based on current year, day, and time
-      run: echo "::set-env name=VERSION::$(date +'%Y.%j.%H%M')"
+    - name: Set release name
+      run: echo "RELEASE_NAME=$(date '+%Y.%j.%H.%M')" >> $GITHUB_ENV
 
     - name: Zip the built files
-      run: zip -r Release-${{ env.VERSION }}.zip bin/Release/net6.0/*
+      run: zip -r "$RELEASE_NAME.zip" "Neos yt-dlp Updater/bin/Release/net6.0/"
 
     - name: Upload the release artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Release
-        path: ./Release-${{ env.VERSION }}.zip
+        name: ${{ env.RELEASE_NAME }}
+        path: ./${{ env.RELEASE_NAME }}.zip
