@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+//Simple Youtube-DLP updater for NeosVR to save time doing the commands in a command prompt
 namespace YtdlpUpdater
 {
     class Program
